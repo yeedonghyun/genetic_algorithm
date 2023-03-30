@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 public class TestShakespeare : MonoBehaviour
 {
 	[Header("Genetic Algorithm")]
-	[SerializeField] string targetString;
+	[SerializeField] int targetInt = 0;
 	[SerializeField] string validCharacters;
 	[SerializeField] int populationSize;
 	[SerializeField] float mutationRate;
@@ -25,18 +26,21 @@ public class TestShakespeare : MonoBehaviour
 	private GeneticAlgorithm<char> ga;
 	private System.Random random;
 
-	void Start()
-	{
-		targetText.text = targetString;
+    private string Binary;
 
-		if (string.IsNullOrEmpty(targetString))
+    void Start()
+	{
+		//targetText.text = targetInt;
+		Binary = Ten2To(targetInt);
+
+        if (Binary.Length == 0)
 		{
 			Debug.LogError("Target string is null or empty");
 			this.enabled = false;
 		}
 
 		random = new System.Random();
-		ga = new GeneticAlgorithm<char>(populationSize, targetString.Length, random, GetRandomCharacter, FitnessFunction, elitism, mutationRate);
+		ga = new GeneticAlgorithm<char>(populationSize, Binary.Length, random, GetRandomCharacter, FitnessFunction, elitism, mutationRate);
 	}
 
 	void Update()
@@ -64,13 +68,13 @@ public class TestShakespeare : MonoBehaviour
 
 		for (int i = 0; i < dna.Genes.Length; i++)
 		{
-			if (dna.Genes[i] == targetString[i])
+			if (dna.Genes[i] == Binary[i])
 			{
 				score += 1;
 			}
 		}
 
-		score /= targetString.Length;
+		score /= Binary.Length;
 
 		score = (Mathf.Pow(2, score) - 1) / (2 - 1);
 
@@ -127,4 +131,31 @@ public class TestShakespeare : MonoBehaviour
 
 		return sb.ToString();
 	}
+
+    private string Ten2To(int num)
+	{
+		string binary = "";
+
+		while (num != 0)
+		{
+			binary += num % 2;
+			num /= 2;
+        }
+
+        return new string(binary.Reverse().ToArray());
+    }
+
+    private int To2Ten(string num)
+    {
+        int deci = 0;
+		int index = 1;
+
+        for(int i = 0; i < num.Length; i++)
+		{
+			deci += num[i * index];
+			index *= 2;
+        }
+
+        return deci;
+    }
 }
