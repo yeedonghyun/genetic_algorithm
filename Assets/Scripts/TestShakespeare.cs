@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,8 +17,8 @@ public class TestShakespeare : MonoBehaviour
     [SerializeField] int elitism;
 
 	[Header("Other")]
-	int numCharsPerText = 12;
-	[SerializeField] Text targetText;
+	string max = "111111111111";
+    [SerializeField] Text targetText;
 	[SerializeField] Text bestText;
 	[SerializeField] Text bestFitnessText;
 	[SerializeField] Text numGenerationsText;
@@ -26,11 +27,11 @@ public class TestShakespeare : MonoBehaviour
 
 	private GeneticAlgorithm<char> ga;
 	private System.Random random;
+    int maxInt;
 
     private string Binary;
     void Start()
 	{
-		;
         //targetText.text = targetInt;
         Binary = Convert.ToString(targetInt, 2);
 
@@ -41,7 +42,7 @@ public class TestShakespeare : MonoBehaviour
 		}
 
 		random = new System.Random();
-		ga = new GeneticAlgorithm<char>(populationSize, Binary.Length, random, GetRandomCharacter, FitnessFunction, elitism, mutationRate);
+		ga = new GeneticAlgorithm<char>(populationSize, max.Length, random, GetRandomCharacter, FitnessFunction, elitism, mutationRate);
 	}
 
 	void Update()
@@ -65,23 +66,9 @@ public class TestShakespeare : MonoBehaviour
 	private float FitnessFunction(int index)
 	{
 		float score = 0;
-        //DNA<char> dna = ga.Population[index];
-		int target = Convert.ToInt32(Binary, 2);
+        int target = Convert.ToInt32(Binary, 2);
 		int dna = Convert.ToInt32(new string(ga.Population[index].Genes), 2);
-        score = (float)(Math.Abs(target - dna)) / 4095;
-
-
-        //for (int i = 0; i < dna.Genes.Length; i++)
-        //{
-        //	if (dna.Genes[i] == Binary[i])
-        //	{
-        //		score += 1;
-        //	}
-        //}
-
-        //score /= Binary.Length;
-
-        //score = (Mathf.Pow(2, score) - 1) / (2 - 1);
+        score = 1 - (float)(Math.Abs(target - dna)) / maxInt;
 
         return score;
 	}
@@ -91,7 +78,8 @@ public class TestShakespeare : MonoBehaviour
 
 	void Awake()
 	{
-		numCharsPerTextObj = numCharsPerText / validCharacters.Length;
+        maxInt = Convert.ToInt32(max, 2);
+        numCharsPerTextObj = max.Length / validCharacters.Length;
 		if (numCharsPerTextObj > populationSize) numCharsPerTextObj = populationSize;
 
 		int numTextObjects = Mathf.CeilToInt((float)populationSize / numCharsPerTextObj);
@@ -104,23 +92,20 @@ public class TestShakespeare : MonoBehaviour
 
 	private void UpdateText(char[] bestGenes, float bestFitness, int generation, int populationSize, Func<int, char[]> getGenes)
 	{
-		bestText.text = CharArrayToString(bestGenes);
+        bestText.text = Convert.ToInt32(new string(bestGenes), 2).ToString();
+
+        //bestText.text = CharArrayToString(bestGenes);
 		bestFitnessText.text = bestFitness.ToString();
 
 		numGenerationsText.text = generation.ToString();
 
 		for (int i = 0; i < textList.Count; i++)
 		{
-			var sb = new StringBuilder();
 			int endIndex = i == textList.Count - 1 ? populationSize : (i + 1) * numCharsPerTextObj;
 			for (int j = i * numCharsPerTextObj; j < endIndex; j++)
-			{
+            {
+                var sb = new StringBuilder();
                 sb.Append(getGenes(j));
-                //foreach (var c in getGenes(j))
-                //{
-                //	
-                //}
-                //if (j < endIndex - 1) sb.AppendLine();
                 textList[i].text = Convert.ToInt32(sb.ToString(), 2).ToString();
             }
 		}
