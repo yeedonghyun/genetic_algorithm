@@ -14,7 +14,7 @@ public class TestShakespeare : MonoBehaviour
     [SerializeField] int elitism;
 
 	[Header("Other")]
-	[SerializeField] int numCharsPerText = 15000;
+	[SerializeField] int numCharsPerText;
 	[SerializeField] Text targetText;
 	[SerializeField] Text bestText;
 	[SerializeField] Text bestFitnessText;
