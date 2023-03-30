@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
 public class TestShakespeare : MonoBehaviour
 {
@@ -27,11 +28,11 @@ public class TestShakespeare : MonoBehaviour
 	private System.Random random;
 
     private string Binary;
-
     void Start()
 	{
-		//targetText.text = targetInt;
-		Binary = Ten2To(targetInt);
+		;
+        //targetText.text = targetInt;
+        Binary = Convert.ToString(targetInt, 2);
 
         if (Binary.Length == 0)
 		{
@@ -110,14 +111,14 @@ public class TestShakespeare : MonoBehaviour
 			int endIndex = i == textList.Count - 1 ? populationSize : (i + 1) * numCharsPerTextObj;
 			for (int j = i * numCharsPerTextObj; j < endIndex; j++)
 			{
-				foreach (var c in getGenes(j))
-				{
-					sb.Append(c);
-				}
-				if (j < endIndex - 1) sb.AppendLine();
-			}
-
-			textList[i].text = sb.ToString();
+                sb.Append(getGenes(j));
+                //foreach (var c in getGenes(j))
+                //{
+                //	
+                //}
+                //if (j < endIndex - 1) sb.AppendLine();
+                textList[i].text = Convert.ToInt32(sb.ToString(), 2).ToString();
+            }
 		}
 	}
 
@@ -131,31 +132,4 @@ public class TestShakespeare : MonoBehaviour
 
 		return sb.ToString();
 	}
-
-    private string Ten2To(int num)
-	{
-		string binary = "";
-
-		while (num != 0)
-		{
-			binary += num % 2;
-			num /= 2;
-        }
-
-        return new string(binary.Reverse().ToArray());
-    }
-
-    private int To2Ten(string num)
-    {
-        int deci = 0;
-		int index = 1;
-
-        for(int i = 0; i < num.Length; i++)
-		{
-			deci += num[i * index];
-			index *= 2;
-        }
-
-        return deci;
-    }
 }
