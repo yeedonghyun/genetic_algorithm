@@ -16,7 +16,7 @@ public class TestShakespeare : MonoBehaviour
     [SerializeField] int elitism;
 
 	[Header("Other")]
-	[SerializeField] int numCharsPerText;
+	int numCharsPerText = 12;
 	[SerializeField] Text targetText;
 	[SerializeField] Text bestText;
 	[SerializeField] Text bestFitnessText;
@@ -65,21 +65,25 @@ public class TestShakespeare : MonoBehaviour
 	private float FitnessFunction(int index)
 	{
 		float score = 0;
-		DNA<char> dna = ga.Population[index];
+        //DNA<char> dna = ga.Population[index];
+		int target = Convert.ToInt32(Binary, 2);
+		int dna = Convert.ToInt32(new string(ga.Population[index].Genes), 2);
+        score = (float)(Math.Abs(target - dna)) / 4095;
 
-		for (int i = 0; i < dna.Genes.Length; i++)
-		{
-			if (dna.Genes[i] == Binary[i])
-			{
-				score += 1;
-			}
-		}
 
-		score /= Binary.Length;
+        //for (int i = 0; i < dna.Genes.Length; i++)
+        //{
+        //	if (dna.Genes[i] == Binary[i])
+        //	{
+        //		score += 1;
+        //	}
+        //}
 
-		score = (Mathf.Pow(2, score) - 1) / (2 - 1);
+        //score /= Binary.Length;
 
-		return score;
+        //score = (Mathf.Pow(2, score) - 1) / (2 - 1);
+
+        return score;
 	}
     
 	private int numCharsPerTextObj;
