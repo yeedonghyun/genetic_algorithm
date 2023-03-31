@@ -17,7 +17,7 @@ public class TestShakespeare : MonoBehaviour
     [SerializeField] int elitism;
 
 	[Header("Other")]
-	string max = "111111111111";
+	string max = "1111111111111111";
     [SerializeField] Text targetText;
 	[SerializeField] Text bestText;
 	[SerializeField] Text bestFitnessText;
@@ -32,14 +32,14 @@ public class TestShakespeare : MonoBehaviour
     private string Binary;
     void Start()
 	{
-        //targetText.text = targetInt;
+        targetText.text = targetInt.ToString();
         Binary = Convert.ToString(targetInt, 2);
 
-        if (Binary.Length == 0)
-		{
-			Debug.LogError("Target string is null or empty");
-			this.enabled = false;
-		}
+		//if (Binary.Length == 0)
+		//{
+		//	Debug.LogError("Target string is null or empty");
+		//	this.enabled = false;
+		//}
 
 		random = new System.Random();
 		ga = new GeneticAlgorithm<char>(populationSize, max.Length, random, GetRandomCharacter, FitnessFunction, elitism, mutationRate);
@@ -65,10 +65,8 @@ public class TestShakespeare : MonoBehaviour
 
 	private float FitnessFunction(int index)
 	{
-		float score = 0;
-        int target = Convert.ToInt32(Binary, 2);
 		int dna = Convert.ToInt32(new string(ga.Population[index].Genes), 2);
-        score = 1 - (float)(Math.Abs(target - dna)) / maxInt;
+        float score = 1 - (float)(Math.Abs(targetInt - dna)) / maxInt;
 
         return score;
 	}
